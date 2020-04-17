@@ -1,9 +1,12 @@
 package com.beatabaczynska.fazyksiazyca
 
+import android.os.Build
 import android.os.Bundle
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import java.lang.Integer.parseInt
+import java.time.LocalDate
+import java.time.Period
 import java.util.*
 
 
@@ -99,6 +102,38 @@ class MainActivity : AppCompatActivity() {
         return (j1 - jd + 30) % 30
     }
 
+    fun toPercentage(number: Double): Double{
+        if(number == 0.0) return 0.0
+        if(number == 15.0) return 100.0
+        if( number < 15.0) return number*(100.0/15)
+        else  return (100.0 - (number - 15.0)*(100.0/15))
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun lookBack(year: Int, month: Int, day: Int): LocalDate{
+        // wait for 0.0 or 15.0
+        var ealierDay = LocalDate.of(year, month, day).minus(Period.ofDays(1))
+        do{
+            var res = Simple(ealierDay.year, ealierDay.monthValue, ealierDay.dayOfMonth)
+            ealierDay = ealierDay.minus(Period.ofDays(1))
+        } while((res != 0.0) or (res!= 15.0))
+
+        return ealierDay
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun lookForward(year: Int, month: Int, day: Int): LocalDate{
+        // wait for 0.0 or 15.0
+        var ealierDay = LocalDate.of(year, month, day).plus(Period.ofDays(1))
+        do{
+            var res = Simple(ealierDay.year, ealierDay.monthValue, ealierDay.dayOfMonth)
+            ealierDay = ealierDay.plus(Period.ofDays(1))
+        } while((res != 0.0) or (res!= 15.0))
+
+        return ealierDay
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -106,8 +141,9 @@ class MainActivity : AppCompatActivity() {
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
         val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
         val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-        tvDzisiaj.text = Simple(currentYear, currentMonth, currentDay).toString() + " " + Conway(currentYear, currentMonth, currentDay).toString() + " " + Trig1(currentYear, currentMonth, currentDay).toString() + " " + Trig2(currentYear, currentMonth, currentDay).toString()
-        tvPoprzedniNow.text = currentDay.toString() + " " + currentMonth.toString() + " " + currentYear.toString()
+        val res = Simple(currentYear, currentMonth, currentDay).toString() + " " + Conway(currentYear, currentMonth, currentDay).toString() + " " + Trig1(currentYear, currentMonth, currentDay).toString() + " " + Trig2(currentYear, currentMonth, currentDay).toString()
+        tvDzisiaj.text = "Dzisiaj: " + toPercentage(Simple(currentYear, currentMonth, currentDay)).toInt().toString() + "%"
+        tvPoprzedniNow.text = lookBack(currentYear.toInt(), currentMonth.toInt(), currentDay.toInt()).toString()
 
 
     }

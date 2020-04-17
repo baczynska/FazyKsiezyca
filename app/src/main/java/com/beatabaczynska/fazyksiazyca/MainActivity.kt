@@ -9,20 +9,23 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    fun julday(year: Int, month: Int, day: Int) {
+    fun julday(yearI: Int, monthI: Int, dayI: Int): Double {
+        var year = yearI;
+        var month = monthI;
+        var day = dayI;
         if (year < 0) { year ++; }
-        var jy = parseInt(year);
-        var jm = parseInt(month) +1;
+        var jy = year;
+        var jm = month + 1;
         if (month <= 2) {jy--;	jm += 12;	}
-        var jul = Math.floor(365.25 *jy) + Math.floor(30.6001 * jm) + parseInt(day) + 1720995;
+        var jul = Math.floor(365.25 *jy) + Math.floor(30.6001 * jm) + day + 1720995;
         if (day+31*(month+12*year) >= (15+31*(10+12*1582))) {
-            ja = Math.floor(0.01 * jy);
+            var ja = Math.floor(0.01 * jy);
             jul = jul + 2 - ja + Math.floor(0.25 * ja);
         }
         return jul;
     }
 
-    fun Trig2(year: Int, month: Int, day: Int){
+    fun Trig2(year: Int, month: Int, day: Int): Double {
 
         val n = Math.floor(12.37 * (year - 1900 + (1.0 * month - 0.5) / 12.0))
         val RAD = 3.14159265 / 180.0

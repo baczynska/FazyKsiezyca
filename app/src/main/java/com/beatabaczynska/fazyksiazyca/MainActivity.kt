@@ -2,6 +2,7 @@ package com.beatabaczynska.fazyksiazyca
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -109,7 +110,6 @@ class MainActivity : AppCompatActivity() {
         else  return (100.0 - (number - 15.0)*(100.0/15))
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun lookBack(year: Int, month: Int, day: Int): LocalDate{
         // wait for 0.0 or 15.0
         var ealierDay = LocalDate.of(year, month, day).minus(Period.ofDays(1))
@@ -121,7 +121,6 @@ class MainActivity : AppCompatActivity() {
         return ealierDay
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun lookForward(year: Int, month: Int, day: Int): LocalDate{
         // wait for 0.0 or 15.0
         var ealierDay = LocalDate.of(year, month, day).plus(Period.ofDays(1))
@@ -133,7 +132,7 @@ class MainActivity : AppCompatActivity() {
         return ealierDay
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -143,7 +142,10 @@ class MainActivity : AppCompatActivity() {
         val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
         val res = Simple(currentYear, currentMonth, currentDay).toString() + " " + Conway(currentYear, currentMonth, currentDay).toString() + " " + Trig1(currentYear, currentMonth, currentDay).toString() + " " + Trig2(currentYear, currentMonth, currentDay).toString()
         tvDzisiaj.text = "Dzisiaj: " + toPercentage(Simple(currentYear, currentMonth, currentDay)).toInt().toString() + "%"
-        tvPoprzedniNow.text = lookBack(currentYear.toInt(), currentMonth.toInt(), currentDay.toInt()).toString()
+        Log.i("Done", "Done")
+        //var fromBack = lookBack(currentYear, currentMonth, currentDay)
+        //Log.i(fromBack.toString(), fromBack.toString())
+        //tvPoprzedniNow.text = fromBack.getYear().toString()
 
 
     }

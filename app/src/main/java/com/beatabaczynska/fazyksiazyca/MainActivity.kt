@@ -13,6 +13,10 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
+    // 1 -> Trig1; 2-> Trig2; 3 -> Conway; else -> Simple
+
+    var algo = 1
+
     fun julday(yearI: Int, monthI: Int, dayI: Int): Double {
         var year = yearI;
         var month = monthI;
@@ -116,7 +120,12 @@ class MainActivity : AppCompatActivity() {
         var res = 11.1
         do{
             ealierDay = ealierDay.minus(Period.ofDays(1))
-            res = Simple(ealierDay.year, ealierDay.monthValue, ealierDay.dayOfMonth)
+            when (algo){
+                1 -> res = Trig1(ealierDay.year, ealierDay.monthValue, ealierDay.dayOfMonth)
+                2 -> res = Trig2(ealierDay.year, ealierDay.monthValue, ealierDay.dayOfMonth)
+                3 -> res = Conway(ealierDay.year, ealierDay.monthValue, ealierDay.dayOfMonth)
+                else -> res = Simple(ealierDay.year, ealierDay.monthValue, ealierDay.dayOfMonth)
+            }
         } while((res != 0.0) and (res!= 15.0) and (res!=30.0))
 
         return ealierDay
@@ -128,7 +137,12 @@ class MainActivity : AppCompatActivity() {
         var res = 11.1
         do{
             nextDay = nextDay.plus(Period.ofDays(1))
-            res = Simple(nextDay.year, nextDay.monthValue, nextDay.dayOfMonth)
+            when (algo){
+                1 -> res = Trig1(nextDay.year, nextDay.monthValue, nextDay.dayOfMonth)
+                2 -> res = Trig2(nextDay.year, nextDay.monthValue, nextDay.dayOfMonth)
+                3 -> res = Conway(nextDay.year, nextDay.monthValue, nextDay.dayOfMonth)
+                else -> res = Simple(nextDay.year, nextDay.monthValue, nextDay.dayOfMonth)
+            }
         } while((res != 0.0) and (res!= 15.0) and (res!= 30.0))
 
         return nextDay
@@ -142,8 +156,17 @@ class MainActivity : AppCompatActivity() {
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
         val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
         val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-        //val res = Simple(currentYear, currentMonth, currentDay).toString() + " " + Conway(currentYear, currentMonth, currentDay).toString() + " " + Trig1(currentYear, currentMonth, currentDay).toString() + " " + Trig2(currentYear, currentMonth, currentDay).toString()
-        val todayVal = Simple(currentYear, currentMonth, currentDay)
+
+        var todayVal = Simple(currentYear, currentMonth, currentDay)
+
+        when (algo){
+            1 -> todayVal = Trig1(currentYear, currentMonth, currentDay)
+            2 -> todayVal = Trig2(currentYear, currentMonth, currentDay)
+            3 -> todayVal = Conway(currentYear, currentMonth, currentDay)
+            else -> {}
+        }
+
+
         tvDzisiaj.text = "Dzisiaj: " + toPercentage(todayVal).toInt().toString() + "%"
         var fromBack = lookBack(currentYear, currentMonth, currentDay)
         if(todayVal<=15.0){

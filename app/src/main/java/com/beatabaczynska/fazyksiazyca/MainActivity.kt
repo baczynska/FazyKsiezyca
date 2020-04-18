@@ -112,24 +112,26 @@ class MainActivity : AppCompatActivity() {
 
     fun lookBack(year: Int, month: Int, day: Int): LocalDate{
         // wait for 0.0 or 15.0
-        var ealierDay = LocalDate.of(year, month, day).minus(Period.ofDays(1))
+        var ealierDay = LocalDate.of(year, month, day)
+        var res = 11.1
         do{
-            var res = Simple(ealierDay.year, ealierDay.monthValue, ealierDay.dayOfMonth)
             ealierDay = ealierDay.minus(Period.ofDays(1))
-        } while((res != 0.0) or (res!= 15.0))
+            res = Simple(ealierDay.year, ealierDay.monthValue, ealierDay.dayOfMonth)
+        } while((res != 0.0) and (res!= 15.0) and (res!=30.0))
 
         return ealierDay
     }
 
     fun lookForward(year: Int, month: Int, day: Int): LocalDate{
         // wait for 0.0 or 15.0
-        var ealierDay = LocalDate.of(year, month, day).plus(Period.ofDays(1))
+        var nextDay = LocalDate.of(year, month, day)
+        var res = 11.1
         do{
-            var res = Simple(ealierDay.year, ealierDay.monthValue, ealierDay.dayOfMonth)
-            ealierDay = ealierDay.plus(Period.ofDays(1))
-        } while((res != 0.0) or (res!= 15.0))
+            nextDay = nextDay.plus(Period.ofDays(1))
+            res = Simple(nextDay.year, nextDay.monthValue, nextDay.dayOfMonth)
+        } while((res != 0.0) and (res!= 15.0) and (res!= 30.0))
 
-        return ealierDay
+        return nextDay
     }
 
 
@@ -140,12 +142,26 @@ class MainActivity : AppCompatActivity() {
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
         val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
         val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-        val res = Simple(currentYear, currentMonth, currentDay).toString() + " " + Conway(currentYear, currentMonth, currentDay).toString() + " " + Trig1(currentYear, currentMonth, currentDay).toString() + " " + Trig2(currentYear, currentMonth, currentDay).toString()
-        tvDzisiaj.text = "Dzisiaj: " + toPercentage(Simple(currentYear, currentMonth, currentDay)).toInt().toString() + "%"
-        Log.i("Done", "Done")
-        //var fromBack = lookBack(currentYear, currentMonth, currentDay)
-        //Log.i(fromBack.toString(), fromBack.toString())
-        //tvPoprzedniNow.text = fromBack.getYear().toString()
+        //val res = Simple(currentYear, currentMonth, currentDay).toString() + " " + Conway(currentYear, currentMonth, currentDay).toString() + " " + Trig1(currentYear, currentMonth, currentDay).toString() + " " + Trig2(currentYear, currentMonth, currentDay).toString()
+        val todayVal = Simple(currentYear, currentMonth, currentDay)
+        tvDzisiaj.text = "Dzisiaj: " + toPercentage(todayVal).toInt().toString() + "%"
+        var fromBack = lookBack(currentYear, currentMonth, currentDay)
+        if(todayVal<=15.0){
+            // kiedy poprzedni nów
+            tvPoprzedniNow.text = "Poprzedni nów: " + fromBack.dayOfMonth.toString() + "." + fromBack.monthValue.toString() + "." + fromBack.getYear().toString() + " r."
+        } else {
+            // kiedy poprzednia pełnia
+            tvPoprzedniNow.text = "Poprzednia pełnia: " + fromBack.dayOfMonth.toString() + "." + fromBack.monthValue.toString() + "." + fromBack.getYear().toString() + " r."
+        }
+        var fromForward = lookForward(currentYear, currentMonth, currentDay)
+        if(todayVal<15.0){
+            // kiedy następna pełnia
+            tvNastepnaPelnia.text = "Nastepna pelnia: " + fromForward.dayOfMonth.toString() + "." + fromForward.monthValue.toString() + "." + fromForward.getYear().toString() + " r."
+        } else {
+            // kiedy nastepny nów
+            tvNastepnaPelnia.text = "Następny nów: " + fromForward.dayOfMonth.toString() + "." + fromForward.monthValue.toString() + "." + fromForward.getYear().toString() + " r."
+        }
+
 
 
     }

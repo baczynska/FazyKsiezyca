@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 import java.time.LocalDate
 import java.time.Period
 import java.util.*
@@ -16,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     // 1 -> Trig1; 2-> Trig2; 3 -> Conway; else -> Simple
 
     var algo = 1
+    var moonSide = "n"
 
     fun julday(yearI: Int, monthI: Int, dayI: Int): Double {
         var year = yearI;
@@ -107,11 +109,17 @@ class MainActivity : AppCompatActivity() {
         return (j1 - jd + 30) % 30
     }
 
-    fun toPercentage(number: Double): Double{
+    fun toPercentage100(number: Double): Double{
         if(number == 0.0) return 0.0
         if(number == 15.0) return 100.0
         if( number < 15.0) return number*(100.0/15)
         else  return (100.0 - (number - 15.0)*(100.0/15))
+    }
+
+    fun toPercentage50(number: Double): Double{
+        if(number == 0.0) return 0.0
+        if(number == 29.0) return 100.0
+        else  return (number*(100.0/30.0))
     }
 
     fun lookBack(year: Int, month: Int, day: Int): LocalDate{
@@ -166,8 +174,9 @@ class MainActivity : AppCompatActivity() {
             else -> {}
         }
 
-
-        tvDzisiaj.text = "Dzisiaj: " + toPercentage(todayVal).toInt().toString() + "%"
+        var percMoon = toPercentage100(todayVal).toInt()
+        var percBetweenMoon = toPercentage50(todayVal).toInt()
+        tvDzisiaj.text = "Dzisiaj: " + percBetweenMoon.toString() + "%"
         var fromBack = lookBack(currentYear, currentMonth, currentDay)
         if(todayVal<=15.0){
             // kiedy poprzedni nów
@@ -184,6 +193,46 @@ class MainActivity : AppCompatActivity() {
             // kiedy nastepny nów
             tvNastepnaPelnia.text = "Następny nów: " + fromForward.dayOfMonth.toString() + "." + fromForward.monthValue.toString() + "." + fromForward.getYear().toString() + " r."
         }
+
+        // change image
+        var ending = 'n'
+        if(percBetweenMoon <= 50){
+            // 'n' ending
+            ending = 'n'
+        } else{
+            // 'p' ending
+            ending = 'p'
+        }
+        var nearestPercentage = 0
+
+        if(percMoon < 5){
+            nearestPercentage = 0
+        } else if (percMoon < 15){
+            nearestPercentage = 10
+        }else if (percMoon < 25){
+            nearestPercentage = 20
+        }else if (percMoon < 35){
+            nearestPercentage = 30
+        }else if (percMoon < 45){
+            nearestPercentage = 40
+        }else if (percMoon < 55){
+            nearestPercentage = 50
+        }else if (percMoon < 65){
+            nearestPercentage = 60
+        }else if (percMoon < 75){
+            nearestPercentage = 70
+        }else if (percMoon < 85){
+            nearestPercentage = 80
+        }else if (percMoon < 95){
+            nearestPercentage = 90
+        }else {
+            nearestPercentage = 100
+        }
+
+        var imageLink = moonSide + "_" + nearestPercentage.toString() + "_" + ending + ".jpg"
+        var img = imageLink.toInt()
+        imageView.setImageResource(R.drawable.img)
+        imageView.setImageResource(R.drawable.s_60_p)
 
 
 

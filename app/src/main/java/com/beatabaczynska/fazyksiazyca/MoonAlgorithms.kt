@@ -1,30 +1,95 @@
 package com.beatabaczynska.fazyksiazyca
 
-import java.lang.Exception
+import android.content.Context
+import android.widget.Toast
 import java.time.LocalDate
 import java.time.Period
 import java.util.*
+import kotlin.math.roundToInt
 
-class MoonPhaseCounter {
+class MoonAlgorithms {
 
-    // 1 -> Trig1; 2-> Trig2; 3 -> Conway; else -> Simple
+    //  1 (or anything else) -> Simple; 2 -> Conway; 3 -> Trig1; 4-> Trig2;
+    //  1 (or anything else) -> N; 2 -> S;
+    companion object {
+        var algo = 1
+        var moonSide = 1
+    }
 
-    var algo = 1
-    private var moonSide = "n"
-        set(value) {
-            if(value == "n" || value == "s") {
-                field = value
-            } else {
-                throw Exception("wrong value")
+    fun decodedMoonSide(): Char {
+        if(moonSide == 1) {
+            return 'n'
+        }
+        return 's'
+    }
+
+    fun saveInFile(context: Context, filename: String, value: String) {
+        try {
+            val fos = context.openFileOutput(filename, Context.MODE_PRIVATE).also {
+                it.write(value.toByteArray())
             }
+            fos.close()
+        } catch (t: Throwable) {
+            Toast.makeText(context, "Nie udało się zapisać ustawień", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun readFromFile(context: Context, filename: String) : String {
+        try{
+            context.openFileInput(filename).bufferedReader().useLines { return it.toList()[0] }
+        } catch (ignore: Throwable){
+            return "1"
+        }
+    }
+
+    fun loadAlgo(context: Context): Int {
+        algo = readFromFile(context,"algorithm").toInt()
+        return algo
+    }
+
+    fun loadSemisphere(context: Context): Int {
+        moonSide = readFromFile(context,"hemisphere").toInt()
+        return moonSide
+    }
+
+    fun onAlgoChanged(context: Context, option: String) {
+        algo = option.toInt()
+        saveInFile(context,"algorithm", option)
+    }
+
+    fun onHemisphereChanged(context: Context, option: String) {
+        moonSide = option.toInt()
+        saveInFile(context,"hemisphere", option)
+    }
+
+    val algorithms: Array<String> = arrayOf("Simple", "Conway", "Trig1", "Trig2")
+        get() : Array<String> {
+            return field
         }
 
+    fun getAllFullMoonsInYear(year: Int): Array<String?> {
+        val list = ArrayList<String>()
+
+        val date = Calendar.getInstance()
+        date.set(year,0,1)
+        while(date.get(Calendar.YEAR) == year) {
+            if(getDayValue(year,date.get(Calendar.MONTH),date.get(Calendar.DAY_OF_MONTH)).roundToInt() in 0..2) {
+                list.add("${date.get(Calendar.DAY_OF_MONTH)}.${date.get(Calendar.MONTH) + 1}.${year}")
+                date.add(Calendar.DATE, 23)
+            }
+            date.add(Calendar.DATE, 1)
+        }
+        val array = arrayOfNulls<String>(list.size)
+        list.toArray(array)
+        return array
+    }
+
     fun getDayValue(year: Int, month: Int, day: Int): Double {
-        when (algo){
-            1 -> return Trig1(year, month, day)
-            2 -> return Trig2(year, month, day)
-            3 -> return Conway(year, month, day)
-            else -> return Simple(year, month, day)
+        return when (algo){
+            2 -> Conway(year, month, day)
+            3 -> Trig1(year, month, day)
+            4 -> Trig2(year, month, day)
+            else -> Simple(year, month, day)
         }
     }
 

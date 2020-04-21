@@ -6,4 +6,66 @@
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="-194dp"
+        tools:layout_editor_absoluteY="84dp">
+
+        <RadioGroup
+            android:id="@+id/hemisphereGroup"
+            android:layout_width="186dp"
+            android:layout_height="94dp"
+            android:layout_marginBottom="160dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/hemisphereLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Półkula:" />
+
+            <RadioButton
+                android:id="@+id/hemisphereN"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="północna" />
+
+            <RadioButton
+                android:id="@+id/hemisphereS"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="południowa" />
+        </RadioGroup>
+
+        <RadioGroup
+            android:id="@+id/algorithmsChoice"
+            android:layout_width="220dp"
+            android:layout_height="166dp"
+            app:layout_constraintBottom_toTopOf="@+id/hemisphereGroup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Wybierz algorytm:" />
+        </RadioGroup>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/goBackButtonSettingsActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Powrót"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
